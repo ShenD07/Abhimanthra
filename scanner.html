@@ -31,6 +31,14 @@
         visibility: visible;
     }
 
+    /* Fix for the video size and removing white space */
+    video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover; /* Ensures video fills the screen */
+        object-position: center; /* Keeps the video centered */
+    }
+
     /* Scan guideline box */
     .scan-box {
         position: absolute;
@@ -76,7 +84,7 @@
         top: 20px;
         right: 20px;
         padding: 10px 20px;
-        background: #7b094f; /* Same color as front page button */
+        background: #7b094f;
         color: white;
         border: none;
         border-radius: 5px;
@@ -89,13 +97,6 @@
     .a-text,
     .a-marker-info {
         display: none !important;
-    }
-
-    /* Fix for Android zooming issues */
-    video {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
     }
 
     a-scene {

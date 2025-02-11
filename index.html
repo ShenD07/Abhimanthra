@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AR Scanner</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,27 +19,80 @@
             height: 100vh;
             background: url('bg.png') no-repeat center center/cover;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(5px);
         }
 
-        /* Animated button */
+        /* Countdown container */
+        .countdown {
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1s ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        /* Individual countdown block */
+        .time-box {
+            text-align: center;
+            padding: 10px;
+            min-width: 80px;
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .time-box .time {
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        /* Animated button with transparent effect */
         .start-btn {
-            background-color: #7b094f;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            padding: 50px 30px;
-            font-size: 20px;
+            padding: 20px 40px;
+            font-size: 22px;
             border: none;
-            border-radius: 20px;
+            border-radius: 10px;
             cursor: pointer;
-            animation: pulse 1.5s infinite;
-            transition: transform 0.2s;
+            animation: pulse 1.5s infinite, fadeIn 1.5s;
+            transition: transform 0.2s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.3);
         }
 
         .start-btn:hover {
             transform: scale(1.1);
+            box-shadow: 0px 6px 15px rgba(255, 255, 255, 0.4);
         }
 
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Button Pulse Animation */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -53,6 +104,25 @@
 
     <!-- Landing Page -->
     <div class="landing">
+        <div class="countdown">
+            <div class="time-box">
+                <span>Days</span>
+                <div class="time" id="days">00</div>
+            </div>
+            <div class="time-box">
+                <span>Hours</span>
+                <div class="time" id="hours">00</div>
+            </div>
+            <div class="time-box">
+                <span>Minutes</span>
+                <div class="time" id="minutes">00</div>
+            </div>
+            <div class="time-box">
+                <span>Seconds</span>
+                <div class="time" id="seconds">00</div>
+            </div>
+        </div>
+
         <button class="start-btn" onclick="startAR()">Click Here</button>
     </div>
 
@@ -60,6 +130,26 @@
         function startAR() {
             window.location.href = "scanner.html"; // Redirect to scanner page
         }
+
+        // Countdown Timer
+        function updateCountdown() {
+            const eventDate = new Date("April 3, 2025 18:00:00").getTime();
+            const now = new Date().getTime();
+            const timeLeft = eventDate - now;
+
+            if (timeLeft > 0) {
+                document.getElementById("days").textContent = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").textContent = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").textContent = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").textContent = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            } else {
+                document.querySelector(".countdown").innerHTML = "Event Started!";
+            }
+        }
+
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Run once to prevent delay
     </script>
 
 </body>

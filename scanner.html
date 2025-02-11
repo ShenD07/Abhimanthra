@@ -12,27 +12,37 @@
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden;
             margin: 0;
             padding: 0;
+            overflow: hidden;
             background: black;
             touch-action: none;
-        }
-
-        /* Full-screen container */
-        #camera-frame {
-            width: 100vw;
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        /* AR Scene container */
+        #camera-frame {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Ensure AR.js Scene fills screen */
+        a-scene {
+            width: 100vw !important;
+            height: 100vh !important;
             position: absolute;
             top: 0;
             left: 0;
+            overflow: hidden;
         }
 
-        /* Ensure AR Scene fills screen */
-        a-scene {
+        /* Ensuring the camera video is correctly positioned */
+        video {
+            object-fit: cover !important;
             width: 100vw !important;
             height: 100vh !important;
             position: absolute;
@@ -102,6 +112,13 @@
             if (scene) {
                 scene.style.width = "100vw";
                 scene.style.height = "100vh";
+            }
+
+            let video = document.querySelector('video');
+            if (video) {
+                video.style.objectFit = "cover";
+                video.style.width = "100vw";
+                video.style.height = "100vh";
             }
         }
 

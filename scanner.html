@@ -8,28 +8,39 @@
     <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.js"></script>
     
     <style>
-        /* Ensure Full-Screen Scanner Without Zoom Issues */
+        /* Fullscreen layout without zoom issues */
         html, body {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
             margin: 0;
             padding: 0;
-            touch-action: none;
             background: black;
+            touch-action: none;
         }
 
-        /* Scanner Container */
-        #scanner-container {
+        /* Full-screen camera frame */
+        #camera-frame {
             width: 100vw;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        /* Back Button (Top Right Corner) */
+        /* Ensure AR Scene fits correctly */
+        a-scene {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Back button (top right) */
         .back-btn {
             position: absolute;
             top: 15px;
@@ -42,55 +53,30 @@
             border-radius: 10px;
             cursor: pointer;
             transition: 0.3s;
+            z-index: 100;
         }
 
         .back-btn:hover {
             background-color: #9c0b62;
         }
 
-        /* Scan Animation Box */
+        /* Scan Box (Fixed at Center) */
         .scan-box {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 180px;
-            height: 180px;
+            width: 200px;
+            height: 200px;
             border: 3px solid white;
             border-radius: 10px;
             transform: translate(-50%, -50%);
-            animation: scanEffect 2s infinite;
-        }
-
-        /* Moving Line Inside Scan Box */
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.8);
-            animation: moveLine 2s infinite linear;
-        }
-
-        /* Scan Effect (Fading Borders) */
-        @keyframes scanEffect {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* Line Moving Up and Down */
-        @keyframes moveLine {
-            0% { top: 0; }
-            50% { top: 90%; }
-            100% { top: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Scanner Container -->
-    <div id="scanner-container">
+    <!-- Full-Screen Camera Frame -->
+    <div id="camera-frame">
         <!-- AR Scene -->
         <a-scene embedded arjs>
             <a-marker preset="hiro">
@@ -99,30 +85,30 @@
             <a-entity camera></a-entity>
         </a-scene>
 
-        <!-- Scan Guideline Box -->
-        <div class="scan-box">
-            <div class="scan-line"></div>
-        </div>
+        <!-- Scan Box for guidance -->
+        <div class="scan-box"></div>
 
         <!-- Back Button -->
         <button class="back-btn" onclick="goBack()">Back</button>
     </div>
 
     <script>
-        // Fix Zoom Issues for Android Chrome
-        function adjustZoom() {
-            let screenWidth = window.innerWidth;
-            let screenHeight = window.innerHeight;
-            document.body.style.transform = `scale(${screenWidth / window.outerWidth})`;
-            document.body.style.transformOrigin = "top left";
-        }
-        window.onload = adjustZoom;
-        window.onresize = adjustZoom;
-
-        // Go Back to Index Page
         function goBack() {
-            window.location.href = "index.html"; // Change this to your front page filename
+            window.location.href = "index.html"; // Change this to your homepage
         }
+
+        function adjustCamera() {
+            let frame = document.getElementById('camera-frame');
+            let scene = document.querySelector('a-scene');
+
+            // Ensure the camera fills the screen
+            scene.style.width = frame.clientWidth + 'px';
+            scene.style.height = frame.clientHeight + 'px';
+        }
+
+        // Apply fix when page loads
+        window.onload = adjustCamera;
+        window.onresize = adjustCamera;
     </script>
 
 </body>

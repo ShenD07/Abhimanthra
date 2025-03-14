@@ -5,108 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>AR Scanner (Canvas)</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.min.js"></script>
     <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
-
-    /* Fullscreen layout */
-    #ar-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    /* Canvas to draw video feed */
-    canvas {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Scan guideline box */
-    .scan-box {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 180px;
-        height: 180px;
-        transform: translate(-50%, -50%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .corner {
-        position: absolute;
-        width: 30px;
-        height: 30px;
-        border: 8px solid white;
-    }
-
-    .corner.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-    .corner.top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
-    .corner.bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
-    .corner.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-
-    /* Scanning line animation */
-    .scan-line {
-        position: absolute;
-        width: 100%;
-        height: 3px;
-        background-color: white;
-        animation: scanMove 2s infinite alternate;
-    }
-
-    @keyframes scanMove {
-        0% { top: 0; }
-        100% { top: 100%; }
-    }
-
-    /* Back button */
-    .back-btn {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background: #7b094f;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    /* Hide AR.js default debug text */
-    .a-enter-vr, 
-    .a-text,
-    .a-marker-info {
-        display: none !important;
-    }
-
-    a-scene {
-        width: 100vw !important;
-        height: 100vh !important;
-    }
-</style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        #ar-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; }
+        .scan-box { position: absolute; top: 50%; left: 50%; width: 180px; height: 180px; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; }
+        .corner { position: absolute; width: 30px; height: 30px; border: 8px solid white; }
+        .corner.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .corner.top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .corner.bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .corner.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+        .scan-line { position: absolute; width: 100%; height: 3px; background-color: white; animation: scanMove 2s infinite alternate; }
+        @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
+        .back-btn { position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: #7b094f; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .a-enter-vr, .a-text, .a-marker-info { display: none !important; }
+        a-scene { width: 100vw !important; height: 100vh !important; }
+    </style>
 </head>
 <body>
 
     <!-- AR Scene -->
     <div id="ar-container">
-        <a-scene embedded arjs>
-            <!-- Marker for object scanning -->
-            <a-marker type="pattern" url="new_marker.patt">
+        <a-scene embedded arjs="trackingMethod: best; detectionMode: mono_and_matrix; debugUIEnabled: false;">
+            <!-- Marker with smooth tracking -->
+            <a-marker type="pattern" url="new_marker.patt" smooth="true" smoothCount="10" smoothTolerance="0.05">
                 <a-entity gltf-model="myobj1.glb" scale="0.03 0.03 0.03" rotation="-90 0 0" position="0 0 0"></a-entity>
             </a-marker>
-            <!-- Camera entity with fixed zoom -->
-            <a-camera></a-camera>
+            <!-- Camera entity with fixed tracking -->
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
         </a-scene>
 
         <!-- Scan guideline box -->
@@ -121,41 +47,12 @@
         <!-- Back button -->
         <button class="back-btn" onclick="goBack()">Back</button>
 
-        <!-- Video and Canvas Elements -->
-        <video id="video" autoplay style="display: none;"></video>
-        <canvas id="canvas"></canvas>
     </div>
 
     <script>
         function goBack() {
             window.location.href = "index.html"; // Go back to the landing page
         }
-
-        // Get webcam stream
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-
-        // Start webcam and draw on canvas
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(error => console.error('Error accessing the camera', error));
-
-        // Adjust video and canvas to the same size
-        video.addEventListener('play', function () {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            function draw() {
-                if (!video.paused && !video.ended) {
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    requestAnimationFrame(draw); // Keep drawing the video frame
-                }
-            }
-            draw();
-        });
     </script>
 
 </body>

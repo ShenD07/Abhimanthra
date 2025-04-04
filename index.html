@@ -1,156 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhimanthra</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abhimanthra</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-        /* Full-screen landing page */
-        .landing {
-            position: fixed;
-            width: 100%;
-            height: 100vh;
-            background: url('bg_new.jpg') no-repeat center center/cover;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            backdrop-filter: blur(5px);
-        }
+    /* Default background (desktop) */
+    .landing {
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      background: url('bg.png') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      backdrop-filter: blur(5px);
+    }
 
-        /* Countdown container */
-        .countdown {
-            display: flex;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-            animation: fadeIn 1s ease-in-out;
-            margin-bottom: 20px;
-        }
+    /* Mobile background override */
+    @media only screen and (max-width: 768px) {
+      .landing {
+        background: url('bg_new.jpg') no-repeat center center/cover;
+      }
+    }
 
-        /* Individual countdown block */
-        .time-box {
-            text-align: center;
-            padding: 10px;
-            min-width: 80px;
-        }
+    .countdown {
+      display: flex;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+      animation: fadeIn 1s ease-in-out;
+      margin-bottom: 20px;
+    }
 
-        .time-box span {
-            display: block;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+    .time-box {
+      text-align: center;
+      padding: 10px;
+      min-width: 80px;
+    }
 
-        .time-box .time {
-            font-size: 35px;
-            font-weight: bold;
-        }
+    .time-box span {
+      display: block;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
 
-        /* Animated button with transparent effect */
-        .start-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 20px 40px;
-            font-size: 22px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            animation: pulse 1.5s infinite, fadeIn 1.5s;
-            transition: transform 0.2s, box-shadow 0.3s;
-            backdrop-filter: blur(10px);
-            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.3);
-        }
+    .time-box .time {
+      font-size: 35px;
+      font-weight: bold;
+    }
 
-        .start-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0px 6px 15px rgba(255, 255, 255, 0.4);
-        }
+    /* Animated Button */
+    .start-btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      padding: 20px 40px;
+      font-size: 22px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      animation: pulse 1.5s infinite, fadeIn 1.5s;
+      backdrop-filter: blur(10px);
+      box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      z-index: 1;
+    }
 
-        /* Fade-in animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .start-btn::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffff, #ff00cc);
+      background-size: 300% 300%;
+      z-index: -1;
+      filter: blur(4px);
+      animation: borderRun 4s linear infinite;
+      border-radius: 12px;
+    }
 
-        /* Button Pulse Animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-    </style>
+    .start-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 6px 15px rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes borderRun {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Landing Page -->
-    <div class="landing">
-        <div class="countdown">
-            <div class="time-box">
-                <span>Days</span>
-                <div class="time" id="days">00</div>
-            </div>
-            <div class="time-box">
-                <span>Hours</span>
-                <div class="time" id="hours">00</div>
-            </div>
-            <div class="time-box">
-                <span>Minutes</span>
-                <div class="time" id="minutes">00</div>
-            </div>
-            <div class="time-box">
-                <span>Seconds</span>
-                <div class="time" id="seconds">00</div>
-            </div>
-        </div>
-
-        <button class="start-btn" onclick="startAR()">Click Here</button>
+  <!-- Landing Page -->
+  <div class="landing">
+    <div class="countdown">
+      <div class="time-box">
+        <span>Days</span>
+        <div class="time" id="days">00</div>
+      </div>
+      <div class="time-box">
+        <span>Hours</span>
+        <div class="time" id="hours">00</div>
+      </div>
+      <div class="time-box">
+        <span>Minutes</span>
+        <div class="time" id="minutes">00</div>
+      </div>
+      <div class="time-box">
+        <span>Seconds</span>
+        <div class="time" id="seconds">00</div>
+      </div>
     </div>
 
-    <script>
-        function startAR() {
-            window.location.href = "scanner.html"; // Redirect to scanner page
-        }
+    <button class="start-btn" onclick="startAR()">Start AR Experience</button>
+  </div>
 
-        // Countdown Timer
-        function updateCountdown() {
-            const eventDate = new Date("April 24, 2025 18:00:00").getTime();
-            const now = new Date().getTime();
-            const timeLeft = eventDate - now;
+  <script>
+    function startAR() {
+      window.location.href = "scanner.html"; // AR scanner page
+    }
 
-            if (timeLeft > 0) {
-                document.getElementById("days").textContent = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                document.getElementById("hours").textContent = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                document.getElementById("minutes").textContent = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById("seconds").textContent = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            } else {
-                document.querySelector(".countdown").innerHTML = "Event Started!";
-            }
-        }
+    function updateCountdown() {
+      const eventDate = new Date("April 24, 2025 18:00:00").getTime();
+      const now = new Date().getTime();
+      const timeLeft = eventDate - now;
 
-        // Update countdown every second
-        setInterval(updateCountdown, 1000);
-        updateCountdown(); // Run once to prevent delay
-    </script>
+      if (timeLeft > 0) {
+        document.getElementById("days").textContent = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        document.getElementById("hours").textContent = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById("minutes").textContent = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById("seconds").textContent = Math.floor((timeLeft % (1000 * 60)) / 1000);
+      } else {
+        document.querySelector(".countdown").innerHTML = "Event Started!";
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // run once at load
+  </script>
 
 </body>
 </html>
